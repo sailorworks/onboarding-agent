@@ -1,23 +1,27 @@
 {
-  "name": "heygenvideo",
+  "name": "onboarding-agent",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "description": "An AI agent to automate GitHub repo analysis, video creation, and Slack notifications.",
+  "main": "dist/index.js",
+"scripts": {
+  "start": "dotenv -e .env -- node dist/index.js",
+    "dev": "ts-node index.ts",
+    "build": "tsc"
   },
-  "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
   "dependencies": {
-    "@composio/core": "^0.2.0",
-    "dotenv": "^17.2.3",
-    "openai": "^6.6.0"
+    "@composio/core": "^0.2.1",
+    "@composio/openai-agents": "^0.2.1",
+    "@openai/agents": "^0.1.3",
+    "dotenv": "^16.4.5",
+    "dotenv-cli": "^11.0.0",
+    "inquirer": "^8.2.4"
   },
   "devDependencies": {
-    "@types/node": "^24.9.1",
+    "@types/inquirer": "^8.2.1",
+    "@types/node": "^20.12.12",
     "ts-node": "^10.9.2",
-    "typescript": "^5.9.3"
+    "typescript": "^5.4.5"
   }
 }
