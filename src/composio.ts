@@ -1,5 +1,4 @@
 // src/composio.ts
-
 import { Composio } from "@composio/core";
 import { OpenAIAgentsProvider } from "@composio/openai-agents";
 
@@ -10,15 +9,15 @@ export const composio = new Composio({
 });
 
 interface ConnectionConfig {
-  githubAuthConfigId: string; // CHANGED
-  heygenAuthConfigId: string; // CHANGED
-  slackAuthConfigId: string; // CHANGED
+  githubAuthConfigId: string;
+  heygenAuthConfigId: string;
+  slackAuthConfigId: string;
 }
 
 /**
  * Creates a Tool Router session pre-configured with existing connected accounts.
  * @param userId - A unique identifier for the user running the session.
- * @param config - The connection IDs for the required tools.
+ * @param config - The auth config IDs for the required tools.
  * @returns The Tool Router session object.
  */
 export async function createToolRouterSession(
@@ -31,18 +30,17 @@ export async function createToolRouterSession(
     toolkits: [
       {
         toolkit: "github",
-        authConfigId: config.githubAuthConfigId, // CHANGED
+        authConfigId: config.githubAuthConfigId,
       },
       {
         toolkit: "heygen",
-        authConfigId: config.heygenAuthConfigId, // CHANGED
+        authConfigId: config.heygenAuthConfigId,
       },
       {
         toolkit: "slack",
-        authConfigId: config.slackAuthConfigId, // CHANGED
+        authConfigId: config.slackAuthConfigId,
       },
     ],
-    // This flag is important to ensure it uses only the provided accounts
     manuallyManageConnections: true,
   });
 
