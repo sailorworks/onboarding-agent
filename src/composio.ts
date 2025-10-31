@@ -1,5 +1,5 @@
 // src/composio.ts
-import { Composio } from "@composio/core";
+import { AuthScheme, Composio } from "@composio/core";
 import { OpenAIAgentsProvider } from "@composio/openai-agents";
 
 // Initialize the main Composio client
@@ -8,42 +8,57 @@ export const composio = new Composio({
   provider: new OpenAIAgentsProvider(),
 });
 
-interface ConnectionConfig {
-  githubAuthConfigId: string;
-  heygenAuthConfigId: string;
-  slackAuthConfigId: string;
-}
-
 /**
- * Creates a Tool Router session pre-configured with existing connected accounts.
- * @param userId - A unique identifier for the user running the session.
- * @param config - The auth config IDs for the required tools.
+ * Creates a Tool Router session for a single, specific toolkit.
+ * @param userId - A unique identifier for the user.
+ * @param toolkit - The name of the toolkit (e.g., "github").
+ * @param authConfigId - The auth config ID for the toolkit.
  * @returns The Tool Router session object.
  */
-export async function createToolRouterSession(
+export async function createSingleToolkitSession(
   userId: string,
-  config: ConnectionConfig
+  toolkit: "github" | "slack",
+  authConfigId: string
 ) {
-  console.log("🔄 Initializing secure Tool Router session...");
+  console.log(`🔄 Initializing secure Tool Router session for ${toolkit}...`);
 
   const session = await composio.experimental.toolRouter.createSession(userId, {
     toolkits: [
       {
-        toolkit: "github",
-        authConfigId: config.githubAuthConfigId,
-      },
-      {
-        toolkit: "heygen",
-        authConfigId: config.heygenAuthConfigId,
-      },
-      {
-        toolkit: "slack",
-        authConfigId: config.slackAuthConfigId,
+        toolkit,
+        authConfigId,
       },
     ],
     manuallyManageConnections: true,
   });
 
-  console.log("✅ Tool Router session created.");
+  console.log(`✅ ${toolkit} session created.`);
   return session;
+}
+
+/**
+ * Establishes a direct connection to Heygen using an API key.
+ * @param userId - A unique identifier for the user.
+ * @param authConfigId - The Heygen auth config ID.
+ * @param apiKey - The Heygen API key.
+ * @returns The connected account ID for Heygen.
+ */
+export async function connectHeygenAccount(
+  userId: string,
+  authConfigId: string,
+  apiKey: string
+): Promise<string> {
+  console.log("🔄 Connecting to HeyGen via Composio...");
+  const connection = await composio.connectedAccounts.initiate(
+    userId,
+    authConfigId,
+    {
+      config: AuthScheme.APIKey({
+        generic_api_key: apiKey,
+      }),
+      allowMultiple: true,
+    }
+  );
+  console.log("✅ HeyGen account connected successfully.");
+  return connection.id;
 }
